@@ -163,3 +163,7 @@ class CompositionalLayoutBuilder {
         return layout
     }
 }
+struct ImageModel: Identifiable, Hashable {
+    let id = UUID()
+    let imageName: String // e.g., "post_1", "post_2", etc.
+}
