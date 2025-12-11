@@ -40,7 +40,7 @@ You can install this package either via **Xcode UI** or by editing `Package.swif
 3. In the search / URL field, paste this repo URL:
 
    ```text
-   https://github.com/Excelsior-Technologies-Community/Excelsior-Technologies-Community-IOS_ImageGride
+ https://github.com/Excelsior-Technologies-Community/IOS_ImageGride
 ````
 
 4. In **Dependency Rule**:
@@ -62,7 +62,7 @@ If you manage dependencies manually via `Package.swift`, add this to your `depen
 ```swift
 .dependencies: [
     .package(
-        url: "https://github.com/Excelsior-Technologies-Community/Excelsior-Technologies-Community-IOS_ImageGride",
+        url: "https://github.com/Excelsior-Technologies-Community/IOS_ImageGride",
         branch: "Stages"
     )
 ]
@@ -225,7 +225,7 @@ You don’t need to touch any of this to use the library, but it’s there if yo
 * Add the package from:
 
   ```text
-  https://github.com/Excelsior-Technologies-Community/Excelsior-Technologies-Community-IOS_ImageGride
+ https://github.com/Excelsior-Technologies-Community/IOS_ImageGride/tree/Development
   ```
 
 * Import the module:
