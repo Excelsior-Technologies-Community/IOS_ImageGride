@@ -113,26 +113,37 @@ public class CompositionalLayoutBuilder {
 
         return UICollectionViewCompositionalLayout { sectionIndex, environment in
             
-            // Small item size
+            // Small item size (each takes 1/2 width and 1/2 height)
             let smallItemSize = NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(0.5),
-                heightDimension: .fractionalHeight(1.0)
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .fractionalHeight(0.5)
             )
             let smallItem = NSCollectionLayoutItem(layoutSize: smallItemSize)
             smallItem.contentInsets = NSDirectionalEdgeInsets(top: spacing, leading: spacing, bottom: spacing, trailing: spacing)
             
-            // Create 2x2 grid group (4 small items)
+            // Vertical group for one column (2 items stacked)
+            let verticalColumnSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1/3),
+                heightDimension: .fractionalHeight(1.0)
+            )
+            let verticalColumn = NSCollectionLayoutGroup.vertical(
+                layoutSize: verticalColumnSize,
+                subitem: smallItem,
+                count: 2
+            )
+            
+            // Create 2x2 grid (two columns side by side)
             let smallGridSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(2/3),
                 heightDimension: .fractionalHeight(1.0)
             )
-            let smallGridGroup = NSCollectionLayoutGroup.vertical(
+            let smallGridGroup = NSCollectionLayoutGroup.horizontal(
                 layoutSize: smallGridSize,
-                repeatingSubitem: smallItem,
+                subitem: verticalColumn,
                 count: 2
             )
             
-            // Large item (1/3 width)
+            // Large item (1/3 width, full height)
             let largeItemSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1/3),
                 heightDimension: .fractionalHeight(1.0)
@@ -160,7 +171,7 @@ public class CompositionalLayoutBuilder {
                 subitems: [largeItem, smallGridGroup]
             )
             
-            // Combine both rows
+            // Combine both rows (10 items pattern)
             let combinedGroup = NSCollectionLayoutGroup.vertical(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
