@@ -113,25 +113,26 @@ public class CompositionalLayoutBuilder {
 
         return UICollectionViewCompositionalLayout { sectionIndex, environment in
             
-            // Small item - each takes 1/2 width and 1/2 height of the small grid container
+            // Small item size
             let smallItemSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(0.5),
-                heightDimension: .fractionalHeight(0.5)
+                heightDimension: .fractionalHeight(1.0)
             )
             let smallItem = NSCollectionLayoutItem(layoutSize: smallItemSize)
             smallItem.contentInsets = NSDirectionalEdgeInsets(top: spacing, leading: spacing, bottom: spacing, trailing: spacing)
             
-            // 2x2 grid of small items (2/3 width, full height)
+            // Create 2x2 grid group (4 small items)
+            let smallGridSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(2/3),
+                heightDimension: .fractionalHeight(1.0)
+            )
             let smallGridGroup = NSCollectionLayoutGroup.vertical(
-                layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(2/3),
-                    heightDimension: .fractionalHeight(1.0)
-                ),
-                subitem: smallItem,
+                layoutSize: smallGridSize,
+                repeatingSubitem: smallItem,
                 count: 2
             )
             
-            // Large item (1/3 width, full height)
+            // Large item (1/3 width)
             let largeItemSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1/3),
                 heightDimension: .fractionalHeight(1.0)
@@ -139,34 +140,37 @@ public class CompositionalLayoutBuilder {
             let largeItem = NSCollectionLayoutItem(layoutSize: largeItemSize)
             largeItem.contentInsets = NSDirectionalEdgeInsets(top: spacing, leading: spacing, bottom: spacing, trailing: spacing)
             
-            // ODD BLOCK: 2x2 grid on LEFT, Big on RIGHT
-            let oddBlockGroup = NSCollectionLayoutGroup.horizontal(
-                layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .fractionalWidth(0.5)
-                ),
+            // ODD ROW: 4 small on LEFT + 1 big on RIGHT
+            let oddRowSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .fractionalWidth(0.5)
+            )
+            let oddRowGroup = NSCollectionLayoutGroup.horizontal(
+                layoutSize: oddRowSize,
                 subitems: [smallGridGroup, largeItem]
             )
             
-            // EVEN BLOCK: Big on LEFT, 2x2 grid on RIGHT
-            let evenBlockGroup = NSCollectionLayoutGroup.horizontal(
-                layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .fractionalWidth(0.5)
-                ),
+            // EVEN ROW: 1 big on LEFT + 4 small on RIGHT
+            let evenRowSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .fractionalWidth(0.5)
+            )
+            let evenRowGroup = NSCollectionLayoutGroup.horizontal(
+                layoutSize: evenRowSize,
                 subitems: [largeItem, smallGridGroup]
             )
             
-            // Combine both blocks in a vertical group (10 items total - alternating pattern)
+            // Combine both rows
             let combinedGroup = NSCollectionLayoutGroup.vertical(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
                     heightDimension: .fractionalWidth(1.0)
                 ),
-                subitems: [oddBlockGroup, evenBlockGroup]
+                subitems: [oddRowGroup, evenRowGroup]
             )
 
-            return NSCollectionLayoutSection(group: combinedGroup)
+            let section = NSCollectionLayoutSection(group: combinedGroup)
+            return section
         }
     }
 }
