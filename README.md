@@ -11,16 +11,16 @@ This package lets you quickly show a **dynamic, masonry-like image grid** simila
 
 ---
 
-## ✨ Features
+##  Features
 
-- ✅ Instagram-like grid layout using `UICollectionViewCompositionalLayout`
-- ✅ Easy to use from **SwiftUI**
-- ✅ Simple API: just pass `[ImageModel]` with image names from your asset catalog
-- ✅ Built as a **Swift Package** – add via SPM and reuse across projects
+-   Instagram-like grid layout using `UICollectionViewCompositionalLayout`
+-   Easy to use from **SwiftUI**
+-   Simple API: just pass `[ImageModel]` with image names from your asset catalog
+-   Built as a **Swift Package** – add via SPM and reuse across projects
 
 ---
 
-## 📦 Requirements
+##   Requirements
 
 - **iOS** 15.0+
 - **Xcode** 15+
@@ -28,11 +28,11 @@ This package lets you quickly show a **dynamic, masonry-like image grid** simila
 
 ---
 
-## 🔗 Installation (Swift Package Manager)
+##   Installation (Swift Package Manager)
 
 You can install this package either via **Xcode UI** or by editing `Package.swift`.
 
-### 1️⃣ Using Xcode – Add Package Dependency
+###   Using Xcode – Add Package Dependency
 
 1. Open your **iOS app project** in Xcode.
 2. Go to:  
@@ -55,7 +55,7 @@ Xcode will now download and link **ImageGridKit** into your project.
 
 ---
 
-### 2️⃣ Using `Package.swift` (for modular projects / frameworks)
+###   Using `Package.swift` (for modular projects / frameworks)
 
 If you manage dependencies manually via `Package.swift`, add this to your `dependencies`:
 
@@ -81,7 +81,7 @@ Then add **`ImageGridKit`** to your target’s dependencies:
 
 ---
 
-## 🖼 Setup: Images
+##  Setup: Images
 
 The grid shows images from your **asset catalog** using **image names**.
 
@@ -99,7 +99,7 @@ The grid shows images from your **asset catalog** using **image names**.
 
 ---
 
-## 🚀 Quick Start (SwiftUI)
+##   Quick Start (SwiftUI)
 
 In your app, create a simple `ContentView` and use the grid.
 
@@ -133,7 +133,7 @@ Run the app and you should see a **beautiful Instagram-style grid** of your imag
 
 ---
 
-## 🧩 Public API Overview
+##   Public API Overview
 
 ### `ImageModel`
 
@@ -176,7 +176,7 @@ Just pass an array of `ImageModel` and it will automatically:
 
 ---
 
-## 🧱 Under the Hood (for curious devs)
+##   Under the Hood (for curious devs)
 
 Internally, the grid uses:
 
@@ -197,7 +197,7 @@ You don’t need to touch any of this to use the library, but it’s there if yo
 
 ---
 
-## ❓ FAQ / Common Issues
+##   FAQ / Common Issues
 
 ### 1. I see empty (white) cells, no images?
 
@@ -220,7 +220,7 @@ You don’t need to touch any of this to use the library, but it’s there if yo
 
 ---
 
-## ✅ Summary
+##   Summary
 
 * Add the package from:
 
@@ -244,7 +244,7 @@ You don’t need to touch any of this to use the library, but it’s there if yo
 
 ---
 
-## 🧑‍💻 Author / Community
+##   Author / Community
 
 This package is part of **Excelsior Technologies Community iOS** reusable components.
 
@@ -252,7 +252,7 @@ Feel free to:
 
 * Open issues
 * Suggest improvements
-* Use it in your own apps and experiments 🚀
+* Use it in your own apps and experiments 
 
 ```
  
