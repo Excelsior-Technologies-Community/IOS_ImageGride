@@ -1,5 +1,6 @@
 //
 //  ImageGrid.swift
+//  Complete Instagram-style Grid Implementation
 //
 
 import UIKit
@@ -15,7 +16,7 @@ public struct ImageModel: Identifiable, Hashable {
     }
 }
 
-// MARK: - SwiftUI Wrapper
+// MARK: - Main Compositional View
 public struct CompositionalCollectionView: UIViewControllerRepresentable {
 
     public let images: [ImageModel]
@@ -24,17 +25,30 @@ public struct CompositionalCollectionView: UIViewControllerRepresentable {
         self.images = images
     }
 
+    typealias DataSource = UICollectionViewDiffableDataSource<Int, ImageModel>
+
+    public func makeCoordinator() -> Coordinator {
+        Coordinator(parent: self)
+    }
+
     public func makeUIViewController(context: Context) -> UIViewController {
+
         let layout = CompositionalLayoutBuilder.createInstagramLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.alwaysBounceVertical = true
+        collectionView.showsVerticalScrollIndicator = true
 
-        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewCell, ImageModel> { cell, _, item in
-            let imageView = UIImageView(image: UIImage(named: item.imageName))
+        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewCell, ImageModel> { cell, indexPath, model in
+
+            let imageView = UIImageView(image: UIImage(named: model.imageName))
             imageView.contentMode = .scaleAspectFill
             imageView.clipsToBounds = true
+            imageView.backgroundColor = .systemGray6
 
             cell.contentView.subviews.forEach { $0.removeFromSuperview() }
             cell.contentView.addSubview(imageView)
+            cell.contentView.backgroundColor = .clear
+            cell.backgroundColor = .clear
 
             imageView.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
@@ -45,10 +59,7 @@ public struct CompositionalCollectionView: UIViewControllerRepresentable {
             ])
         }
 
-        // Diffable datasource
-        let dataSource = UICollectionViewDiffableDataSource<Int, ImageModel>(collectionView: collectionView) {
-            collectionView, indexPath, item in
-            
+        let dataSource = DataSource(collectionView: collectionView) { collectionView, indexPath, item in
             collectionView.dequeueConfiguredReusableCell(
                 using: cellRegistration,
                 for: indexPath,
@@ -56,7 +67,8 @@ public struct CompositionalCollectionView: UIViewControllerRepresentable {
             )
         }
 
-        // Snapshot
+        context.coordinator.dataSource = dataSource
+
         var snapshot = NSDiffableDataSourceSnapshot<Int, ImageModel>()
         snapshot.appendSections([0])
         snapshot.appendItems(images)
@@ -73,10 +85,23 @@ public struct CompositionalCollectionView: UIViewControllerRepresentable {
             collectionView.trailingAnchor.constraint(equalTo: vc.view.trailingAnchor)
         ])
 
+        collectionView.backgroundColor = .black
+        vc.view.backgroundColor = .black
+
         return vc
     }
 
-    public func updateUIViewController(_ vc: UIViewController, context: Context) {}
+    public func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
+
+    // MARK: - Coordinator
+    public class Coordinator: NSObject {
+        var parent: CompositionalCollectionView
+        var dataSource: DataSource?
+
+        init(parent: CompositionalCollectionView) {
+            self.parent = parent
+        }
+    }
 }
 
 // MARK: - Layout Builder
@@ -84,64 +109,64 @@ public class CompositionalLayoutBuilder {
 
     public static func createInstagramLayout() -> UICollectionViewLayout {
 
-            let spacing: CGFloat = 1.0
+        let spacing: CGFloat = 1.0
 
-            return UICollectionViewCompositionalLayout { sectionIndex, environment in
-                
-                // Small item - each takes 1/2 width and 1/2 height of the small grid container
-                let smallItemSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(0.5),
-                    heightDimension: .fractionalHeight(0.5)
-                )
-                let smallItem = NSCollectionLayoutItem(layoutSize: smallItemSize)
-                smallItem.contentInsets = NSDirectionalEdgeInsets(top: spacing, leading: spacing, bottom: spacing, trailing: spacing)
-                
-                // 2x2 grid of small items (2/3 width, full height)
-                let smallGridGroup = NSCollectionLayoutGroup.vertical(
-                    layoutSize: NSCollectionLayoutSize(
-                        widthDimension: .fractionalWidth(2/3),
-                        heightDimension: .fractionalHeight(1.0)
-                    ),
-                    subitem: smallItem,
-                    count: 2
-                )
-                
-                // Large item (1/3 width, full height)
-                let largeItemSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1/3),
+        return UICollectionViewCompositionalLayout { sectionIndex, environment in
+            
+            // Small item - each takes 1/2 width and 1/2 height of the small grid container
+            let smallItemSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(0.5),
+                heightDimension: .fractionalHeight(0.5)
+            )
+            let smallItem = NSCollectionLayoutItem(layoutSize: smallItemSize)
+            smallItem.contentInsets = NSDirectionalEdgeInsets(top: spacing, leading: spacing, bottom: spacing, trailing: spacing)
+            
+            // 2x2 grid of small items (2/3 width, full height)
+            let smallGridGroup = NSCollectionLayoutGroup.vertical(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(2/3),
                     heightDimension: .fractionalHeight(1.0)
-                )
-                let largeItem = NSCollectionLayoutItem(layoutSize: largeItemSize)
-                largeItem.contentInsets = NSDirectionalEdgeInsets(top: spacing, leading: spacing, bottom: spacing, trailing: spacing)
-                
-                // ODD BLOCK: 2x2 grid on LEFT, Big on RIGHT
-                let oddBlockGroup = NSCollectionLayoutGroup.horizontal(
-                    layoutSize: NSCollectionLayoutSize(
-                        widthDimension: .fractionalWidth(1.0),
-                        heightDimension: .fractionalWidth(0.5)
-                    ),
-                    subitems: [smallGridGroup, largeItem]
-                )
-                
-                // EVEN BLOCK: Big on LEFT, 2x2 grid on RIGHT
-                let evenBlockGroup = NSCollectionLayoutGroup.horizontal(
-                    layoutSize: NSCollectionLayoutSize(
-                        widthDimension: .fractionalWidth(1.0),
-                        heightDimension: .fractionalWidth(0.5)
-                    ),
-                    subitems: [largeItem, smallGridGroup]
-                )
-                
-                // Combine both blocks in a vertical group (10 items total - alternating pattern)
-                let combinedGroup = NSCollectionLayoutGroup.vertical(
-                    layoutSize: NSCollectionLayoutSize(
-                        widthDimension: .fractionalWidth(1.0),
-                        heightDimension: .fractionalWidth(1.0)
-                    ),
-                    subitems: [oddBlockGroup, evenBlockGroup]
-                )
+                ),
+                subitem: smallItem,
+                count: 2
+            )
+            
+            // Large item (1/3 width, full height)
+            let largeItemSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1/3),
+                heightDimension: .fractionalHeight(1.0)
+            )
+            let largeItem = NSCollectionLayoutItem(layoutSize: largeItemSize)
+            largeItem.contentInsets = NSDirectionalEdgeInsets(top: spacing, leading: spacing, bottom: spacing, trailing: spacing)
+            
+            // ODD BLOCK: 2x2 grid on LEFT, Big on RIGHT
+            let oddBlockGroup = NSCollectionLayoutGroup.horizontal(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .fractionalWidth(0.5)
+                ),
+                subitems: [smallGridGroup, largeItem]
+            )
+            
+            // EVEN BLOCK: Big on LEFT, 2x2 grid on RIGHT
+            let evenBlockGroup = NSCollectionLayoutGroup.horizontal(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .fractionalWidth(0.5)
+                ),
+                subitems: [largeItem, smallGridGroup]
+            )
+            
+            // Combine both blocks in a vertical group (10 items total - alternating pattern)
+            let combinedGroup = NSCollectionLayoutGroup.vertical(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .fractionalWidth(1.0)
+                ),
+                subitems: [oddBlockGroup, evenBlockGroup]
+            )
 
-                return NSCollectionLayoutSection(group: combinedGroup)
-            }
+            return NSCollectionLayoutSection(group: combinedGroup)
         }
+    }
 }
