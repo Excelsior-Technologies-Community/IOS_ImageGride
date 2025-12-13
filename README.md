@@ -8,7 +8,7 @@ This package provides an **Instagram-style image grid** with compositional layou
 
 ---
 
-## ✨ Features
+##  Features
 
 -   Instagram-like grid layout using `UICollectionViewCompositionalLayout`
  
@@ -25,37 +25,10 @@ This package provides an **Instagram-style image grid** with compositional layou
    https://github.com/Excelsior-Technologies-Community/IOS_ImageGride
    ```
 4. Select **Dependency Rule**:
-   - Choose **Branch**
-   - Enter: `Stages`
+ 
 5. Click **Add Package**
 6. Select your app target and click **Add Package**
-
-### Using Package.swift
-
-Add this to your `Package.swift`:
-
-```swift
-dependencies: [
-    .package(
-        url: "https://github.com/Excelsior-Technologies-Community/IOS_ImageGride",
-        branch: "Stages"
-    )
-]
-```
-
-Then add to your target:
-
-```swift
-.target(
-    name: "YourAppTarget",
-    dependencies: [
-        .product(name: "ImageGridKit", package: "IOS_ImageGride")
-    ]
-)
-```
-
----
-
+ 
 ##   Quick Start
 
 ### 1. Add Images to Asset Catalog
@@ -109,7 +82,7 @@ CompositionalCollectionView(images: myImages)
 
 ---
 
-## 💡 Example Usage
+##  Example Usage
 
 ### Basic Image Grid
 
@@ -151,7 +124,7 @@ struct PhotoGridView: View {
 
 ---
 
-## 🎯 Best Practices
+##  Best Practices
 
 1. **Use consistent image naming**
    ```swift
